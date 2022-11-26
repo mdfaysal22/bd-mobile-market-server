@@ -46,6 +46,12 @@ async function run() {
         })
 
 
+        app.get('/allproducts', async(req, res) => {
+            const query = {};
+            const allProducts = await productsCollection.find(query).toArray();
+            res.send(allProducts);
+        })
+
         app.post('/products', async (req, res) => {
             const product = req.body;
             const result = await productsCollection.insertOne(product);
@@ -60,10 +66,8 @@ async function run() {
 
         app.post('/advertising', async(req, res) => {
             const adsProduct = req.body;
-            const query = {ProductName : adsProduct.ProductName}
+            const query = {ProductName : adsProduct.ProductName, email: adsProduct.email}
             const alreadyAds = await advertisingCollection.find(query).toArray();
-            // console.log(alreadyAds);
-            // console.log(console.log(query));
             if(alreadyAds.length === 0){
                 const result = await advertisingCollection.insertOne(adsProduct);
                 res.send(result);
