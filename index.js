@@ -52,6 +52,13 @@ async function run() {
             res.send(allProducts);
         })
 
+        app.get('/allproducts/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id : ObjectId(id)}
+            const product = await productsCollection.find(query).toArray();
+            res.send(product);
+        })
+
         app.post('/products', async (req, res) => {
             const product = req.body;
             const result = await productsCollection.insertOne(product);
@@ -62,6 +69,13 @@ async function run() {
             const query = {email: email};
             const products = await productsCollection.find(query).toArray();
             res.send(products);
+        })
+
+        app.delete('/products/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id : ObjectId(id)};
+            const result = await productsCollection.deleteOne(query);
+            res.send(result);
         })
 
         app.post('/advertising', async(req, res) => {
@@ -79,6 +93,15 @@ async function run() {
             const query = {};
             const adsProducts = await advertisingCollection.find(query).toArray();
             res.send(adsProducts);
+        })
+
+        app.delete('/advertising/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id : ObjectId(id)};
+            console.log(query);
+            const result = await advertisingCollection.deleteOne(query);
+            res.send(result);
+            
         })
 
         
