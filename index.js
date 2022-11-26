@@ -73,7 +73,8 @@ async function run() {
 
         app.delete('/products/:id', async(req, res) => {
             const id = req.params.id;
-            const query = {_id : ObjectId(id)};
+            const query = {_id : id};
+            console.log(query);
             const result = await productsCollection.deleteOne(query);
             res.send(result);
         })
@@ -97,8 +98,7 @@ async function run() {
 
         app.delete('/advertising/:id', async(req, res) => {
             const id = req.params.id;
-            const query = {_id : ObjectId(id)};
-            console.log(query);
+            const query = {_id : id};
             const result = await advertisingCollection.deleteOne(query);
             res.send(result);
             
