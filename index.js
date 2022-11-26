@@ -3,7 +3,7 @@ const app = express();
 const port = process.env.PORT || 5000
 const cors = require('cors');
 const dotenv = require('dotenv');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 
 
@@ -27,6 +27,7 @@ async function run() {
     try {
         const usersCollection = client.db("BD-Mobile-Market").collection("users");
         const productsCollection = client.db("BD-Mobile-Market").collection("products");
+        const advertisingCollection = client.db("BD-Mobile-Market").collection('advertising');
 
         app.post('/users', async (req, res) => {
             const user = req.body;
@@ -51,10 +52,32 @@ async function run() {
             res.send(result);
         })
         app.get('/products', async (req, res) => {
-            const query = {};
+            const email = req.query.email;
+            const query = {email: email};
             const products = await productsCollection.find(query).toArray();
             res.send(products);
         })
+
+        app.post('/advertising', async(req, res) => {
+            const adsProduct = req.body;
+            const query = {ProductName : adsProduct.ProductName}
+            const alreadyAds = await advertisingCollection.find(query).toArray();
+            // console.log(alreadyAds);
+            // console.log(console.log(query));
+            if(alreadyAds.length === 0){
+                const result = await advertisingCollection.insertOne(adsProduct);
+                res.send(result);
+            }
+            
+        })
+
+        app.get("/advertising", async(req, res) => {
+            const query = {};
+            const adsProducts = await advertisingCollection.find(query).toArray();
+            res.send(adsProducts);
+        })
+
+        
     }
     finally { }
 }
