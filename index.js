@@ -45,16 +45,39 @@ async function run() {
             res.send(users);
         })
 
+        app.put('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id)};
+            const options = { upsert: true };
 
-        app.get('/allproducts', async(req, res) => {
+            const updateDoc = {
+                $set: {
+                    verified: true
+                },
+            };
+            const result = await usersCollection.updateOne(query, updateDoc, options);
+            res.send(result);
+
+        })
+
+        app.delete("/users/:id", async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+
+            const result = await usersCollection.deleteOne(query);
+            res.send(result);
+        })
+
+
+        app.get('/allproducts', async (req, res) => {
             const query = {};
             const allProducts = await productsCollection.find(query).toArray();
             res.send(allProducts);
         })
 
-        app.get('/allproducts/:id', async(req, res) => {
+        app.get('/allproducts/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id : ObjectId(id)}
+            const query = { _id: ObjectId(id) }
             const product = await productsCollection.find(query).toArray();
             res.send(product);
         })
@@ -66,45 +89,44 @@ async function run() {
         })
         app.get('/products', async (req, res) => {
             const email = req.query.email;
-            const query = {email: email};
+            const query = { email: email };
             const products = await productsCollection.find(query).toArray();
             res.send(products);
         })
 
-        app.delete('/products/:id', async(req, res) => {
+        app.delete('/products/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id : id};
-            console.log(query);
+            const query = { _id: id };
             const result = await productsCollection.deleteOne(query);
             res.send(result);
         })
 
-        app.post('/advertising', async(req, res) => {
+        app.post('/advertising', async (req, res) => {
             const adsProduct = req.body;
-            const query = {ProductName : adsProduct.ProductName, email: adsProduct.email}
+            const query = { ProductName: adsProduct.ProductName, email: adsProduct.email }
             const alreadyAds = await advertisingCollection.find(query).toArray();
-            if(alreadyAds.length === 0){
+            if (alreadyAds.length === 0) {
                 const result = await advertisingCollection.insertOne(adsProduct);
                 res.send(result);
             }
-            
+
         })
 
-        app.get("/advertising", async(req, res) => {
+        app.get("/advertising", async (req, res) => {
             const query = {};
             const adsProducts = await advertisingCollection.find(query).toArray();
             res.send(adsProducts);
         })
 
-        app.delete('/advertising/:id', async(req, res) => {
+        app.delete('/advertising/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id : id};
+            const query = { _id: id };
             const result = await advertisingCollection.deleteOne(query);
             res.send(result);
-            
+
         })
 
-        
+
     }
     finally { }
 }
