@@ -28,6 +28,7 @@ async function run() {
         const usersCollection = client.db("BD-Mobile-Market").collection("users");
         const productsCollection = client.db("BD-Mobile-Market").collection("products");
         const advertisingCollection = client.db("BD-Mobile-Market").collection('advertising');
+        const ordersCollection = client.db("BD-Mobile-Market").collection("orders");
 
         app.post('/users', async (req, res) => {
             const user = req.body;
@@ -103,6 +104,20 @@ async function run() {
             const products = await productsCollection.find(query).toArray();
             res.send(products);
         })
+        app.put('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id)};
+            const options = { upsert: true };
+
+            const updateDoc = {
+                $set: {
+                    status: "sold"
+                },
+            };
+            const result = await productsCollection.updateOne(query, updateDoc, options);
+            res.send(result);
+
+        })
 
         app.delete('/products/:id', async (req, res) => {
             const id = req.params.id;
@@ -134,6 +149,25 @@ async function run() {
             const result = await advertisingCollection.deleteOne(query);
             res.send(result);
 
+        })
+        app.post('/orders', async(req, res) => {
+            const order = req.body;
+            const query = {
+                ProductName: order.ProductName,
+                SellerEmail:order.SellerEmail,
+                BuyerEmail: order.BuyerEmail
+            }
+            const alreadyBuy = await ordersCollection.find(query).toArray();
+            if(alreadyBuy.length === 0){
+                const result = await ordersCollection.insertOne(order);
+                res.send(result);
+            }
+            
+        })
+        app.get("/orders", async(req, res) => {
+            const query = {};
+            const order = await ordersCollection.find(query).toArray();
+            res.send(order)
         })
 
 
