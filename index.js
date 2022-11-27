@@ -67,14 +67,24 @@ async function run() {
             const result = await usersCollection.deleteOne(query);
             res.send(result);
         })
-
+        app.get('/verifieduser', async(req, res) => {
+            const email = req.query.email;
+            const query = {email: email};
+            const user = await usersCollection.find(query).toArray();
+            res.send(user);
+        })
 
         app.get('/allproducts', async (req, res) => {
             const query = {};
             const allProducts = await productsCollection.find(query).toArray();
             res.send(allProducts);
         })
-
+        app.get("/allproducts/:category", async(req, res) => {
+            const category = req.params.category;
+            const query = {BrandName: category}
+            const result = await productsCollection.find(query).toArray();
+            res.send(result);
+        })
         app.get('/allproducts/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
