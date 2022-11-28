@@ -45,35 +45,35 @@ async function run() {
             const users = await usersCollection.find(query).toArray();
             res.send(users);
         })
-        app.get('/users/admin/:email', async(req,res) => {
+        app.get('/users/admin/:email', async (req, res) => {
             const email = req.params.email;
             const query = {
                 email: email
             };
             const result = await usersCollection.findOne(query);
-            res.send({isAdmin: result.role === "admin"})
+            res.send({ isAdmin: result.role === "admin" })
         })
 
-        app.get('/users/buyer/:email', async(req, res) => {
+        app.get('/users/buyer/:email', async (req, res) => {
             const email = req.params.email;
             const query = {
                 email: email
             };
             const result = await usersCollection.findOne(query);
-            res.send({isBuyer: result?.role === "buyer"});
+            res.send({ isBuyer: result?.role === "buyer" });
         })
 
-        app.get('/users/seller/:email', async(req,res) => {
+        app.get('/users/seller/:email', async (req, res) => {
             const email = req.params.email;
             const query = {
                 email: email
             }
             const result = await usersCollection.findOne(query);
-            res.send({isSeller: result?.role === "seller"})
+            res.send({ isSeller: result?.role === "seller" })
         })
         app.put('/users/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: ObjectId(id)};
+            const query = { _id: ObjectId(id) };
             const options = { upsert: true };
 
             const updateDoc = {
@@ -86,16 +86,16 @@ async function run() {
 
         })
 
-        app.delete("/users/:id", async(req, res) => {
+        app.delete("/users/:id", async (req, res) => {
             const id = req.params.id;
-            const query = {_id: ObjectId(id)};
+            const query = { _id: ObjectId(id) };
 
             const result = await usersCollection.deleteOne(query);
             res.send(result);
         })
-        app.get('/verifieduser', async(req, res) => {
+        app.get('/verifieduser', async (req, res) => {
             const email = req.query.email;
-            const query = {email: email};
+            const query = { email: email };
             const user = await usersCollection.find(query).toArray();
             res.send(user);
         })
@@ -105,9 +105,9 @@ async function run() {
             const allProducts = await productsCollection.find(query).toArray();
             res.send(allProducts);
         })
-        app.get("/allproducts/:category", async(req, res) => {
+        app.get("/allproducts/:category", async (req, res) => {
             const category = req.params.category;
-            const query = {BrandName: category}
+            const query = { BrandName: category }
             const result = await productsCollection.find(query).toArray();
             res.send(result);
         })
@@ -131,7 +131,7 @@ async function run() {
         })
         app.put('/products/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: ObjectId(id)};
+            const query = { _id: ObjectId(id) };
             const options = { upsert: true };
 
             const updateDoc = {
@@ -144,7 +144,7 @@ async function run() {
 
         })
 
-        
+
 
         app.delete('/products/:id', async (req, res) => {
             const id = req.params.id;
@@ -177,21 +177,21 @@ async function run() {
             res.send(result);
 
         })
-        app.post('/orders', async(req, res) => {
+        app.post('/orders', async (req, res) => {
             const order = req.body;
             const query = {
                 ProductName: order.ProductName,
-                SellerEmail:order.SellerEmail,
+                SellerEmail: order.SellerEmail,
                 BuyerEmail: order.BuyerEmail
             }
             const alreadyBuy = await ordersCollection.find(query).toArray();
-            if(alreadyBuy.length === 0){
+            if (alreadyBuy.length === 0) {
                 const result = await ordersCollection.insertOne(order);
                 res.send(result);
             }
-            
+
         })
-        app.get("/orders", async(req, res) => {
+        app.get("/orders", async (req, res) => {
             const email = req.query.BuyerEmail;
             const query = {
                 BuyerEmail: email
@@ -201,10 +201,9 @@ async function run() {
         })
 
 
-        app.put('/allproducts/:id', async(req, res) => {
+        app.put('/allproducts/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: ObjectId(id)}
-            console.log(query);
+            const query = { _id: ObjectId(id) }
             const options = { upsert: true };
 
             const updateDoc = {
@@ -216,7 +215,7 @@ async function run() {
             res.send(result);
         })
 
-        app.get("/reportedProducts", async(req, res) => {
+        app.get("/reportedProducts", async (req, res) => {
             const reported = req.query.report;
             const query = {
                 Report: reported
