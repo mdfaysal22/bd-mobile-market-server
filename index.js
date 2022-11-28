@@ -45,7 +45,32 @@ async function run() {
             const users = await usersCollection.find(query).toArray();
             res.send(users);
         })
+        app.get('/users/admin/:email', async(req,res) => {
+            const email = req.params.email;
+            const query = {
+                email: email
+            };
+            const result = await usersCollection.findOne(query);
+            res.send({isAdmin: result.role === "admin"})
+        })
 
+        app.get('/users/buyer/:email', async(req, res) => {
+            const email = req.params.email;
+            const query = {
+                email: email
+            };
+            const result = await usersCollection.findOne(query);
+            res.send({isBuyer: result?.role === "buyer"});
+        })
+
+        app.get('/users/seller/:email', async(req,res) => {
+            const email = req.params.email;
+            const query = {
+                email: email
+            }
+            const result = await usersCollection.findOne(query);
+            res.send({isSeller: result?.role === "seller"})
+        })
         app.put('/users/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id)};
